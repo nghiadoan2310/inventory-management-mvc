@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h2 th:text="${titlePage}"></h2>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <br />
+                            <form th:object="${modelForm}" class="form-horizontal form-label-left" th:action="@{/goods-issue/save}" method="POST">
+                                <input th:field="*{id}" type="hidden" />
+                                <input class="product-id" th:field="*{productId}" type="hidden" />
+                                <input th:field="*{createDate}" type="hidden" />
+                                <input th:field="*{activeFlag}" type="hidden" />
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="code">
+                                        Code
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input type="text" th:field="*{code}" class="form-control col-md-7 col-xs-12" th:disabled="${viewOnly}" />
+                                        <div class="has-error">
+                                            <span th:if="${#fields.hasErrors('code')}" th:errors="*{code}" class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="productName">
+                                        Product
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input th:field="*{productName}" class="product-name form-control col-md-7 col-xs-12" readonly />
+                                        <div class="has-error">
+                                            <span th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}" class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <a type="button" class="btn btn-primary" data-toggle="modal" href="#productModal">
+                                        Select
+                                    </a>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="qty">
+                                        Quantity
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input type="text" th:field="*{qty}" class="form-control col-md-7 col-xs-12" th:disabled="${viewOnly}" />
+                                        <div class="has-error">
+                                            <span th:if="${#fields.hasErrors('qty')}" th:errors="*{qty}" class="help-block"></span>
+                                        </div>
+                                    </div>
+                                    <div class="btn btn-primary">
+                                        In Stock
+                                        <span class="quantity">0</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="price">
+                                        Price
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input type="text" th:field="*{price}" class="form-control col-md-7 col-xs-12" th:disabled="${viewOnly}" />
+                                        <div class="has-error">
+                                            <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="ln_solid"></div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        <button class="btn btn-primary" type="button" th:onclick="cancel()">Cancel</button>
+                                        <button th:if="${!viewOnly}" class="btn btn-primary" type="reset">Reset</button>
+                                        <button th:if="${!viewOnly}" type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="productModal" role="dialog" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="display: flex;">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Select Product In Stock</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                            style="display: flex;justify-content: end;flex: 1;">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div style="display: flex;align-items: flex-end;justify-content: end;">
+                            <div style="display: flex;margin-bottom: 6px;">
+                                <input id="searchInput" class="form-control" style="margin-right: 8px;"/>
+                                <button class="btn btn-success" onclick="searchProduct()">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="productTable" class="table table-striped jambo_table bulk_action">
+                            <thead>
+                                <tr class="headings">
+                                    <th class="column-title">#</th>
+                                    <th class="column-title">Code </th>
+                                    <th class="column-title">Name </th>
+                                    <th class="column-title no-link last text-center" colspan="3"><span class="nobr">Action</span>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody></tbody>
+                        </table>
+                        <div id="paging" style="display: flex;justify-content: center;align-items: center;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <script th:inline="javascript">
+        const baseUrl = [[@{/product-in-stock/list/modal}]];
+
+        function gotoPage(page){
+            renderProductList(baseUrl + "?page=" + page)
+        }
+
+        function searchProduct() {
+            const keyword = $('#searchInput').val();
+            renderProductList(baseUrl + "?keyword=" + keyword)
+        }
+
+        function addProduct(product) {
+            $('.product-name').val(product.name)
+            $('.product-id').val(product.id)
+            $('.quantity').text(product.qty)
+        }
+
+        $(document).on('click', '.btn-add-product', function() {
+            const id = $(this).data('id');
+            const code = $(this).data('code');
+            const name = $(this).data('name');
+            const qty = $(this).data('qty');
+
+            addProduct({ id, code, name, qty });
+        });
+
+        function renderProductList(url) {
+            $.get(url, function(products) {
+                const tbody = $('#productTable tbody');
+                tbody.empty();
+                products.data.forEach((p, index) => {
+                    tbody.append(`
+                        <tr>
+                            <td>${index + products.offset + 1}</td>
+                            <td>${p.code}</td>
+                            <td>${p.name}</td>
+                            <td class="text-center">
+                                <button
+                                    id="btn-add"
+                                    type="button"
+                                    class="btn btn-sm btn-success btn-add-product"
+                                    data-id="${p.id}"
+                                    data-code="${p.code}"
+                                    data-name="${p.name}"
+                                    data-qty="${p.qty}"
+                                    data-dismiss="modal"
+                                >
+                                    Select
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                if(products.totalPages > 0) {
+                    const paging = $('#paging');
+                    paging.empty();
+
+                    if(products.totalPages > 1 && products.currentPage !== 1) {
+                        paging.append(`
+                            <span class="fa fa-angle-left" style="font-size: 24px;padding: 4px 18px;cursor: pointer;"
+                                onclick="gotoPage(${products.currentPage} - 1);"
+                            ></span>
+                        `)
+                    }
+                    paging.append(`
+                        <ul class="pagination"></ul>
+                    `)
+                    if(products.totalPages > 1 && products.currentPage !== products.totalPages) {
+                        paging.append(`
+                            <span class="fa fa-angle-right" style="font-size: 24px;padding: 4px 18px;cursor: pointer;"
+                                onclick="gotoPage(${products.currentPage} + 1)"
+                            ></span>
+                        `)
+                    }
+                } else {
+                    paging.append(`
+                        <p style="text-align: center;">Product in stock empty</p>
+                    `)
+                }
+
+                renderPagination(products.currentPage, products.totalPages)
+            });
+        }
+
+        $(document).ready(
+            function() {
+                $('#goods-issuelistId').addClass('current-page').siblings()
+                        .removeClass('current-page');
+                var parent = $('#goods-issuelistId').parents('li');
+                parent.addClass('active').siblings().removeClass('active');
+                $('#goods-issuelistId').parents().show();
+
+
+                $('#productModal').on('shown.bs.modal', function () {
+                    renderProductList(baseUrl)
+                });
+            }
+        );
+
+        function renderPagination(currentPage, totalPages) {
+            var paginationElement = $('.pagination');
+            paginationElement.empty();
+
+            function addPage(page) {
+                const pageLi = $('<li>');
+                const pageBtn = $('<a>').attr('href', '#').text(page);
+                if(page === currentPage) {
+                    pageLi.addClass('active');
+                } else {
+                    pageBtn.on('click', function (e) {
+                        e.preventDefault();
+                        gotoPage(page);
+                    });
+                }
+                pageLi.append(pageBtn);
+                paginationElement.append(pageLi);
+            }
+
+            addPage(1);
+
+            if (currentPage > 3) paginationElement.append('<li><span>...</span></li>');
+
+            for (let i = Math.max(2, currentPage - 2); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
+                addPage(i);
+            }
+
+            if (currentPage < totalPages - 3) paginationElement.append('<li><span>...</span></li>');
+
+            if (totalPages > 1) addPage(totalPages);
+        }
+
+        function cancel() {
+            window.location.href = /*[[@{/goods-issue/list}]]*/ '';
+        }
+    </script>
+</div>
+</body>
+</html>

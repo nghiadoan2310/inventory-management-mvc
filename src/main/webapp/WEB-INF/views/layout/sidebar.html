@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar">
+  <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+      <h3>General</h3>
+      <ul class="nav side-menu">
+        <li id="dashboardId">
+          <a th:href="@{/dashboard}">Dashboard</a>
+        </li>
+        <li th:each="menu : ${session.menuSession}" th:id="${menu.idMenu}">
+          <a th:text="${menu.name}">
+            <span class="fa fa-chevron-down"></span>
+          </a>
+          <ul class="nav child_menu">
+            <li th:each="child : ${menu.child}" th:id="${child.idMenu}">
+              <a th:href="@{${child.url}}" th:text="${child.name}"></a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>

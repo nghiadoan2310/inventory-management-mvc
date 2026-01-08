@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="clearfix"></div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Goods Issues List </h2>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <a th:href="@{/goods-receipt/add}" class="btn btn-app"><i class="fa fa-plus"></i>Add</a>
+                        <a th:href="@{/goods-receipt/export}" class="btn btn-app"><i class="fa fa-cloud-download"></i>Export</a>
+                        <div class="container" style="padding-bottom: 30px;">
+                            <form id="searchForm" th:object="${searchForm}" th:action="@{/goods-receipt/list/1}" method="POST" class="form-horizontal form-label-left">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="code">Code </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input th:field="*{code}" class="form-control col-md-7 col-xs-12" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="fromDate">From Date</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 " >
+                                        <div class="input-group date" id='fromDatePicker'>
+                                            <input th:field="*{fromDate}" class="form-control" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="toDate">To Date</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12 " >
+                                        <div class="input-group date" id='toDatePicker'>
+                                            <input th:field="*{toDate}" class="form-control" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        <button type="submit" class="btn btn-success">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                <tr class="headings">
+                                    <th class="column-title">#</th>
+                                    <th class="column-title">Code</th>
+                                    <th class="column-title">Product </th>
+                                    <th class="column-title">Qty</th>
+                                    <th class="column-title">Price</th>
+                                    <th class="column-title">Update Date</th>
+                                    <th class="column-title no-link last text-center" colspan="2"><span class="nobr">Action</span>
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr th:each="invoice, loop : ${invoices}" th:class="${loop.index%2==0 } ? 'even pointer' : 'odd pointer'">
+                                        <td class=" " th:text="${loop.index+1+pageInfo.offset}"></td>
+                                        <td class=" " th:text="${invoice.code }"></td>
+                                        <td class=" " th:text="${invoice.productInfo.name }"></td>
+                                        <td class=" " th:text="${invoice.qty }"></td>
+                                        <td class="price-invoice" th:text="${invoice.price }"></td>
+                                        <td class="date" th:text="${invoice.updateDate }"></td>
+                                        <td class="text-center"><a th:href="@{/goods-receipt/edit/{id}(id=${invoice.id})}" class="btn btn-round btn-primary">Edit</a></td>
+                                        <td class="text-center"><a href="javascript:void(0);" th:onclick="|confirmDelete(${invoice.id});|" class="btn btn-round btn-danger">Delete</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <th:block th:if="${pageInfo.totalPages > 0}">
+                                <div style="display: flex;justify-content: center;align-items: center;">
+                                <span th:if="${pageInfo.totalPages > 1}" class="fa fa-angle-left" style="font-size: 24px;padding: 4px 18px;cursor: pointer;"
+                                      th:onclick="|gotoPage(${pageInfo.indexPage} - 1);|"
+                                ></span>
+                                    <ul class="pagination">
+
+                                    </ul>
+                                    <span th:if="${pageInfo.totalPages > 1}" class="fa fa-angle-right" style="font-size: 24px;padding: 4px 18px;cursor: pointer;"
+                                          th:onclick="|gotoPage(${pageInfo.indexPage} + 1);|"
+                                    ></span>
+                                </div>
+                            </th:block>>
+                            <th:block th:unless="${pageInfo.totalPages > 0}">
+                                <p style="text-align: center;">Invoice list empty</p>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <script th:inline="javascript">
+        var totalPages = [[${pageInfo.totalPages}]];
+        var currentPage = [[${pageInfo.indexPage}]];
+
+        function confirmDelete(id){
+            if(confirm('Do you want delete this record?')){
+                let urlTemplate = /*[[@{/goods-receipt/delete/{id}(id=${1})}]]*/ '';
+                window.location.href = urlTemplate.replace('1', id);
+            }
+        }
+        function gotoPage(page){
+            var baseUrl = [[@{/goods-receipt/list/}]];
+		    $('#searchForm').attr('action', baseUrl + page);
+		    $('#searchForm').submit();
+	    }
+
+        $(document).ready(function(){
+            $('#goods-receiptlistId').addClass('current-page').siblings()
+                        .removeClass('current-page');
+            var parent = $('#goods-receiptlistId').parents('li');
+            parent.addClass('active').siblings().removeClass('active');
+            $('#goods-receiptlistId').parents().show();
+
+		    processMessage();
+		    renderPagination(currentPage, totalPages);
+		    $('#fromDatePicker').datetimepicker({
+			    format : 'YYYY-MM-DD HH:mm:ss'
+            });
+            $('#toDatePicker').datetimepicker({
+                format : 'YYYY-MM-DD HH:mm:ss'
+            })
+            $('.price-invoice').each(function(){
+                $(this).text(numeral($(this).text()).format('0,0'));
+            })
+	    });
+        function processMessage(){
+            /*<![CDATA[*/
+                var msgSuccess = [[${msgSuccess}]];
+                var msgError = [[${msgError}]];
+            /*]]>*/
+            if(msgSuccess){
+                new PNotify({
+                    title: ' Success',
+                    text: msgSuccess,
+                    type: 'success',
+                    styling: 'bootstrap3',
+                });
+            }
+            if(msgError){
+                new PNotify({
+                    title: ' Error',
+                    text: msgError,
+                    type: 'error',
+                    styling: 'bootstrap3',
+                });
+            }
+        }
+
+        function renderPagination(currentPage, totalPages) {
+            var paginationElement = $('.pagination');
+            paginationElement.empty();
+
+            function addPage(page) {
+                const pageLi = $('<li>');
+                const pageBtn = $('<a>').attr('href', '#').text(page);
+                if(page === currentPage) {
+                    pageLi.addClass('active');
+                } else {
+                    pageBtn.on('click', function (e) {
+                        e.preventDefault();
+                        gotoPage(page);
+                    });
+                }
+                pageLi.append(pageBtn);
+                paginationElement.append(pageLi);
+            }
+
+            addPage(1);
+
+            if (currentPage > 3) paginationElement.append('<li><span>...</span></li>');
+
+            for (let i = Math.max(2, currentPage - 2); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
+                addPage(i);
+            }
+
+            if (currentPage < totalPages - 3) paginationElement.append('<li><span>...</span></li>');
+
+            if (totalPages > 1) addPage(totalPages);
+        }
+
+    </script>
+</div>
+</body>
+</html>

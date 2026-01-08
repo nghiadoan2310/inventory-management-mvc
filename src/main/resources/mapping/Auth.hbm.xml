@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class catalog="inventory_management" name="inventory.model.Auth" table="auth">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID"/>
+            <generator class="identity"/>
+        </id>
+        <many-to-one class="inventory.model.Menu" fetch="select" name="menu">
+            <column name="MENU_ID" not-null="true"/>
+        </many-to-one>
+        <many-to-one class="inventory.model.Role" fetch="select" name="role">
+            <column name="ROLE_ID" not-null="true"/>
+        </many-to-one>
+        <property name="permission" type="int">
+            <column name="PERMISSION" not-null="true"/>
+        </property>
+        <property name="activeFlag" type="int">
+            <column name="ACTIVE_FLAG" not-null="true"/>
+        </property>
+        <property name="createDate" type="timestamp">
+            <column length="19" name="CREATE_DATE" not-null="true"/>
+        </property>
+        <property name="updateDate" type="timestamp">
+            <column length="19" name="UPDATE_DATE" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

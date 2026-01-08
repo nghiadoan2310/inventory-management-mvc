@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h2 th:text="${titlePage}"></h2>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <br />
+                            <form th:object="${modelForm}" class="form-horizontal form-label-left" th:action="@{/user/save}" method="POST">
+                                <input th:field="*{id}" type="hidden" />
+                                <input th:field="*{createDate}" type="hidden" />
+                                <input th:field="*{activeFlag}" type="hidden" />
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="userName">
+                                        Username
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input type="text" th:field="*{userName}" class="form-control col-md-7 col-xs-12" th:disabled="${viewOnly}" />
+                                        <div class="has-error">
+                                            <span th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" th:for="password">
+                                        Password
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input type="password" th:field="*{password}" class="form-control col-md-7 col-xs-12" th:disabled="${viewOnly}" />
+                                        <div class="has-error">
+                                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label th:for="email" class="control-label col-md-3 col-sm-3 col-xs-12">
+                                        Email
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <input type="text" th:field="*{email}" class="form-control col-md-7 col-xs-12" th:disabled="${viewOnly}" />
+                                        <div class="has-error">
+                                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="help-block"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" style="display: flex;justify-content: end;">
+                                        Role
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12" style="display: flex;align-items: center;margin: 7px 0;">
+                                        <div style="display: flex;align-items: center;margin-right: 10px;" th:each="role : ${roles}">
+                                            <input
+                                                    type="checkbox"
+                                                    th:field="*{roleIds}"
+                                                    th:value="${role.id}"
+                                                    style="margin: 0;width: 18px;height: 18px;">
+                                            <label style="margin: 0 6px" th:for="${#ids.prev('roleIds')}" th:text="${role.roleName}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ln_solid"></div>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        <button class="btn btn-primary" type="button" th:onclick="cancel()">Cancel</button>
+                                        <button th:if="${!viewOnly}" class="btn btn-primary" type="reset">Reset</button>
+                                        <button th:if="${!viewOnly}" type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        $(document).ready(
+                function() {
+                    $('#userlistId').addClass('current-page').siblings()
+                            .removeClass('current-page');
+                    var parent = $('#userlistId').parents('li');
+                    parent.addClass('active').siblings().removeClass('active');
+                    $('#userlistId').parents().show();
+                }
+        );
+
+        function cancel() {
+            window.location.href = /*[[@{/user/list}]]*/ '';
+        }
+    </script>
+</div>
+</body>
+</html>

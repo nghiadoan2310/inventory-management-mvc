@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="clearfix"></div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Dashboard</h2>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <div class="container" style="padding: 50px;">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3">
+                                    <div class="panel panel-default stats-card" style="background: #fff;border: none;box-shadow: 0 2px 8px rgba(0,0,0,0.1);border-radius: 8px;">
+                                        <div class="panel-body">
+                                            <div class="media" style="height: 93.5px;display: flex;align-items: center;">
+                                                <div class="media-left" style="width: 48px;height: 48px;border-radius: 8px;background-color: rgba(1,1,1,0.07);display: flex;align-items: center;justify-content: center;padding: 0;">
+                                                    <div class="stats-icon text-primary">
+                                                        <i class="fa fa-users fa-2x"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="media-body" style="padding-left: 14px;flex: 1;">
+                                                    <h6 class="text-muted" style="font-size: 16px;">Total Users</h6>
+                                                    <h3 class="no-margin" style="color: rgba(15, 23, 42, .75);" th:text="${userTotal}"></h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-lg-3">
+                                    <div class="panel panel-default stats-card" style="background: #fff;border: none;box-shadow: 0 2px 8px rgba(0,0,0,0.1);border-radius: 8px;">
+                                        <div class="panel-body">
+                                            <div class="media" style="height: 93.5px;display: flex;align-items: center;">
+                                                <div class="media-left" style="width: 48px;height: 48px;border-radius: 8px;background-color: rgba(1,1,1,0.07);display: flex;align-items: center;justify-content: center;padding: 0;">
+                                                    <div class="stats-icon text-primary">
+                                                        <i class="glyphicon glyphicon-gift" style="font-size: x-large;"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="media-body" style="padding-left: 14px;flex: 1;">
+                                                    <h6 class="text-muted" style="font-size: 16px;">Product In Stock</h6>
+                                                    <h3 class="no-margin" style="color: rgba(15, 23, 42, .75);" th:text="${productInStock}"></h3>
+                                                    <small style="font-size: 13px;">
+                                                        <span th:if="${percentReceiptInMonth > 0}" th:text="${percentReceiptInMonth}"></span>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-lg-3">
+                                    <div class="panel panel-default stats-card" style="background: #fff;border: none;box-shadow: 0 2px 8px rgba(0,0,0,0.1);border-radius: 8px;">
+                                        <div class="panel-body">
+                                            <div class="media" style="display: flex;align-items: center;">
+                                                <div class="media-left" style="width: 48px;height: 48px;border-radius: 8px;background-color: rgba(1,1,1,0.07);display: flex;align-items: center;justify-content: center;padding: 0;">
+                                                    <div class="stats-icon text-primary">
+                                                        <i class="glyphicon glyphicon-log-in" style="font-size: x-large;"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="media-body" style="padding-left: 14px;flex: 1;">
+                                                    <h6 class="text-muted" style="font-size: 16px;">Product Receipt</h6>
+                                                    <h3 class="no-margin" style="color: rgba(15, 23, 42, .75);" th:text="${receiptInMonth}"></h3>
+                                                    <small th:class="${percentReceiptInMonth > 0} ? 'text-success' : 'text-danger'" style="font-size: 13px;">
+                                                        <i th:class="${percentReceiptInMonth > 0} ? 'fa fa-arrow-up' : 'fa fa-arrow-down'"></i>
+                                                        <span th:if="${percentReceiptInMonth > 0}" th:text="${percentReceiptInMonth}"></span>
+                                                        <span th:unless="${percentReceiptInMonth > 0}" th:text="${percentReceiptInMonth*-1}"></span>%
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-lg-3">
+                                    <div class="panel panel-default stats-card" style="background: #fff;border: none;box-shadow: 0 2px 8px rgba(0,0,0,0.1);border-radius: 8px;">
+                                        <div class="panel-body">
+                                            <div class="media" style="display: flex;align-items: center;">
+                                                <div class="media-left" style="width: 48px;height: 48px;border-radius: 8px;background-color: rgba(1,1,1,0.07);display: flex;align-items: center;justify-content: center;padding: 0;">
+                                                    <div class="stats-icon text-primary">
+                                                        <i class="glyphicon glyphicon-log-out" style="font-size: x-large;"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="media-body" style="padding-left: 14px;flex: 1;">
+                                                    <h6 class="text-muted" style="font-size: 16px;">Product Issue</h6>
+                                                    <h3 class="no-margin" style="color: rgba(15, 23, 42, .75);" th:text="${issueInMonth}"></h3>
+                                                    <small th:class="${percentIssueInMonth > 0} ? 'text-success' : 'text-danger'" style="font-size: 13px;">
+                                                        <i th:class="${percentIssueInMonth > 0} ? 'fa fa-arrow-up' : 'fa fa-arrow-down'"></i>
+                                                        <span th:if="${percentIssueInMonth > 0}" th:text="${percentIssueInMonth}"></span>
+                                                        <span th:unless="${percentIssueInMonth > 0}" th:text="${percentIssueInMonth*-1}"></span>%
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 18px;">
+                                <div class="col-md-6">
+                                    <h3>Doanh thu 6 tháng gần nhất</h3>
+                                    <canvas id="dashboardLineChart" width="400" height="150" style="width:100%; height:320px;"></canvas>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h3>Tỉ lệ sản phẩm theo loại</h3>
+                                    <canvas id="dashboardPieChart" width="400" height="150" style="width:100%; height:320px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>-->
+    <script th:inline="javascript">
+        // === Biểu đồ đường (Doanh thu) ===
+        const lineCtx = document.getElementById('dashboardLineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: [[${revenueLabels}]],
+                datasets: [{
+                    label: 'Doanh thu (USD)',
+                    data: [[${revenueData}]],
+                    backgroundColor: "rgba(75,192,192,0.2)",
+                    borderWidth: 2,
+                    pointBackgroundColor: "#fff",
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "#fff",
+                    lineTension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+                },
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        });
+
+        // === Biểu đồ tròn (Phân loại sản phẩm) ===
+        const pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: [[${categoryLabels}]],
+                datasets: [{
+                    label: 'Tỉ lệ sản phẩm',
+                    data: [[${categoryData}]],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)'
+                    ]
+                }]
+            },
+             options: {
+                responsive: true,
+                maintainAspectRatio: false
+             }
+        });
+    </script>
+</div>
+</body>
+</html>

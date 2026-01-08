@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <servlet-name>spring-mvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <multipart-config>
+      <max-file-size>5242880</max-file-size> <!-- 5MB -->
+      <max-request-size>20971520</max-request-size> <!-- 20MB -->
+      <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
+  </servlet>
+<!--  Map tất cả request tới DispatcherServlet để xử lý-->
+  <servlet-mapping>
+    <servlet-name>spring-mvc</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>

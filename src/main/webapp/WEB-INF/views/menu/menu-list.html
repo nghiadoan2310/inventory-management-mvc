@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="clearfix"></div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Menu List </h2>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <div class="container">
+                            <div style="display: flex;align-items: flex-end;justify-content: space-between;">
+                                <form id="searchForm" th:action="@{/user/list/1}" method="GET" style="display: flex;margin-bottom: 6px;">
+                                    <input class="form-control" name="keyword" th:value="${keyword}" style="margin-right: 8px;"/>
+                                    <button class="btn btn-success" type="submit">Search</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+                                        <th rowspan="2" class="column-title text-center" style="border-left: 2px solid"># </th>
+                                        <th rowspan="2" class="column-title text-center" style="border-left: 2px solid">Url</th>
+                                        <th rowspan="2" class="column-title text-center" style="border-left: 2px solid">Status</th>
+                                        <th class="column-title no-link last text-center" th:attr="colspan=${roles.size()}" style="border-left: 2px solid;">Role</th>
+                                        <th rowspan="2" class="column-title text-center" style="border-left: 2px solid">Action</th>
+                                    </tr>
+                                    <tr>
+                                        <th:block th:each="role : ${roles}">
+                                            <th class="column-title text-center" style="border-left: 2px solid" th:text="${role.roleName}"></th>
+                                        </th:block>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr th:each="menu, loop : ${menus}" th:class="${loop.index%2==0 } ? 'even pointer' : 'odd pointer'">
+                                        <td class=" " th:text="${loop.index+1+pageInfo.offset}"></td>
+                                        <td class=" " th:text="${menu.url}"></td>
+                                        <td class="text-center">
+                                            <a th:if="${menu.orderIndex < 0}"
+                                               th:id="'btn-status-' + ${loop.index}"
+                                               th:class="${menu.activeFlag} == 1 ? 'btn btn-round btn-primary' : 'btn btn-round btn-danger'"
+                                               th:text="${menu.activeFlag} == 1 ? 'Enable' : 'Disable'"
+                                               th:onclick="|confirmChange(${loop.index}, ${menu.id}, ${menu.activeFlag});|"
+                                               href="javascript:void(0);">
+                                            </a>
+                                            <a th:if="${menu.orderIndex > 0}"
+                                               href="javascript:void(0);"
+                                               class="btn btn-round"
+                                               style="cursor: none;"
+                                            >Not Change</a>
+                                        </td>
+                                        <th:block th:each="auth : ${menu.mapAuths}">
+                                            <th:block th:if="${auth.value == 1}">
+                                                <td class="text-center"><i class="fa fa-check" style="color: green"></i></td>
+                                            </th:block>
+                                            <th:block th:unless="${auth.value == 1}">
+                                                <td class="text-center"><i class="fa fa-times" style="color:red;"></i></td>
+                                            </th:block>
+                                        </th:block>
+                                        <td class="text-center"><a th:href="@{/menu/edit/{id}(id=${menu.id})}" class="btn btn-round btn-primary">Edit</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <th:block th:if="${pageInfo.totalPages > 0}">
+                                <div style="display: flex;justify-content: center;align-items: center;">
+                                <span th:if="${pageInfo.totalPages > 1}" class="fa fa-angle-left" style="font-size: 24px;padding: 4px 18px;cursor: pointer;"
+                                      th:onclick="|gotoPage(${pageInfo.indexPage} - 1);|"
+                                ></span>
+                                    <ul class="pagination">
+
+                                    </ul>
+                                    <span th:if="${pageInfo.totalPages > 1}" class="fa fa-angle-right" style="font-size: 24px;padding: 4px 18px;cursor: pointer;"
+                                          th:onclick="|gotoPage(${pageInfo.indexPage} + 1);|"
+                                    ></span>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${pageInfo.totalPages > 0}">
+                                <p style="text-align: center;">Menu list empty</p>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script th:inline="javascript">
+        var totalPages = [[${pageInfo.totalPages}]];
+        var currentPage = [[${pageInfo.indexPage}]];
+
+        function confirmChange(index, id, flag){
+            var msg = flag == 1 ? 'Do you want disable this menu ?' : 'Do you want enable this menu ?';
+            if(confirm(msg)){
+                let urlTemplate = /*[[@{/menu/change-status/{id}(id=${1})}]]*/ '';
+                let url = urlTemplate.replace('1', id);
+
+                $.get(url);
+
+                let btnText = flag == 1 ? 'Disable' : 'Enable';
+                let elementId = 'btn-status-' + index;
+
+                if(flag === 1) {
+                    $('#' + elementId).removeClass('btn-primary');
+                    $('#' + elementId).addClass('btn-danger');
+                    $('#' + elementId).attr('onclick', `confirmChange(${id}, 0)`);
+                } else {
+                    $('#' + elementId).removeClass('btn-danger');
+                    $('#' + elementId).addClass('btn-primary');
+                    $('#' + elementId).attr('onclick', `confirmChange(${id}, 1)`);
+                }
+
+                $('#' + elementId).text(btnText);
+            }
+        }
+
+        function gotoPage(page){
+            var baseUrl = [[@{/menu/list/}]];
+		    $('#searchForm').attr('action', baseUrl + page);
+		    $('#searchForm').submit();
+	    }
+
+        $(document).ready(function(){
+		    processMessage();
+		    renderPagination(currentPage, totalPages);
+
+		    $('#menulistId').addClass('current-page').siblings()
+                        .removeClass('current-page');
+            var parent = $('#menulistId').parents('li');
+            parent.addClass('active').siblings().removeClass('active');
+            $('#menulistId').parents().show();
+	    });
+        function processMessage(){
+            /*<![CDATA[*/
+                var msgSuccess = [[${msgSuccess}]];
+                var msgError = [[${msgError}]];
+            /*]]>*/
+            if(msgSuccess){
+                new PNotify({
+                    title: ' Success',
+                    text: msgSuccess,
+                    type: 'success',
+                    styling: 'bootstrap3'
+                });
+            }
+            if(msgError){
+                new PNotify({
+                    title: ' Error',
+                    text: msgError,
+                    type: 'error',
+                    styling: 'bootstrap3'
+                });
+            }
+        }
+
+        function renderPagination(currentPage, totalPages) {
+            var paginationElement = $('.pagination');
+            paginationElement.empty();
+
+            function addPage(page) {
+                const pageLi = $('<li>');
+                const pageBtn = $('<a>').attr('href', '#').text(page);
+                if(page === currentPage) {
+                    pageLi.addClass('active');
+                } else {
+                    pageBtn.on('click', function (e) {
+                        e.preventDefault();
+                        gotoPage(page);
+                    });
+                }
+                pageLi.append(pageBtn);
+                paginationElement.append(pageLi);
+            }
+
+            addPage(1);
+
+            if (currentPage > 3) paginationElement.append('<li><span>...</span></li>');
+
+            for (let i = Math.max(2, currentPage - 2); i <= Math.min(totalPages - 1, currentPage + 2); i++) {
+                addPage(i);
+            }
+
+            if (currentPage < totalPages - 3) paginationElement.append('<li><span>...</span></li>');
+
+            if (totalPages > 1) addPage(totalPages);
+        }
+
+    </script>
+</div>
+</body>
+</html>
