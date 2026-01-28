@@ -73,11 +73,10 @@ public class DashboardService {
     public Map<String, Object> getProductReceiptCard() {
         Map<String, Object> cardData = new HashMap<>();
 
-        BigInteger data = invoiceDAO.getProductTotalAMonth(1).toBigInteger();
-        BigInteger productLastMonth = invoiceDAO.getProductTotalLastMonth(1).toBigInteger();
-
-//        if (data == null) data = BigInteger.ZERO;
-//        if (productLastMonth == null) productLastMonth = BigInteger.ZERO;
+        BigInteger data = invoiceDAO.getProductTotalAMonth(1) == null ?
+                BigInteger.ZERO : invoiceDAO.getProductTotalAMonth(1).toBigInteger();
+        BigInteger productLastMonth = invoiceDAO.getProductTotalLastMonth(1) == null ?
+                BigInteger.ZERO : invoiceDAO.getProductTotalLastMonth(1).toBigInteger();
 
         int percent;
 
@@ -98,8 +97,10 @@ public class DashboardService {
     public Map<String, Object> getProductIssueCard() {
         Map<String, Object> cardData = new HashMap<>();
 
-        BigInteger data = invoiceDAO.getProductTotalAMonth(2).toBigInteger();
-        BigInteger productLastMonth = invoiceDAO.getProductTotalLastMonth(2).toBigInteger();
+        BigInteger data = invoiceDAO.getProductTotalAMonth(2) == null ?
+                BigInteger.ZERO : invoiceDAO.getProductTotalAMonth(2).toBigInteger();
+        BigInteger productLastMonth = invoiceDAO.getProductTotalLastMonth(2) == null ?
+                BigInteger.ZERO : invoiceDAO.getProductTotalLastMonth(2).toBigInteger();
 
         int percent;
 

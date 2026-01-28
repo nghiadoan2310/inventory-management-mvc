@@ -9,3 +9,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
 
+  app:
+    build: .
+    image: inventory-management:v1
+    ports:
+      - "8888:8080"
+    environment:
+      DBMS_CONNECTION: jdbc:mysql://mysql:3306/inventory_management
+    depends_on:
+      - mysql
