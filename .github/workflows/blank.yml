@@ -29,8 +29,8 @@ jobs:
       - name: Deploy mvc project
         run: |
           mkdir -p ~./ssh
-          echo "${{ secrets.VMWARE_SSH_PRIVATE_KEY }}" > ~./ssh/id_rsa
-          chmod 600 ~./ssh/id_rsa
+          echo "${{ secrets.VMWARE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no nghiadoan@192.168.253.110 << EOF
             su - inventory
             ls
