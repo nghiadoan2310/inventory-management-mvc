@@ -31,8 +31,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VMWARE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no nghiadoan@192.168.253.110 << EOF
-            su - inventory
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no inventory@192.168.253.110 << EOF
             ls
             pwd
             cd /projects/inventory-management-mvc
